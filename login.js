@@ -28,7 +28,7 @@ async function Login () {
 
         if (req.status !== 200) {
             button.textContent = 'Log me in';
-            alert(res.msg);
+            alert(res.message);
             document.location.reload();
         } else {
             localStorage.setItem('token', res.token);
