@@ -1,4 +1,6 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html>
+<head>
     <meta charset="utf-8">
     <title>ISBANK | Dashboard</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -18,11 +20,12 @@
     <script src="https://zehliox.com/design_2/dist/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript" src="js/site.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </head>
 
 <body>
 <style>
-
 </style>
 <!--nav-->
 <nav role="navigation" class="navbar navbar-custom">
@@ -46,7 +49,7 @@
                 margin-right: 10px;
                 margin-top: -4px;
 
-                "> </div><div id="full_name" class="fullName">Loading...</div><b class="caret"></b>
+                "> </div><div id="full_name">Loading...</div><b class="caret"></b>
                 <div class="customer_status">Customer</div>
             </a>
                     <ul role="menu" class="dropdown-menu">
@@ -84,27 +87,29 @@
                 <li class="list-group-item"><a href="./loan.html"><i class="glyphicon glyphicon-calendar"></i>Loan</a></li>
                 <li> <a href="#demo3" class="list-group-item " data-toggle="collapse"><i class=" glyphicon glyphicon-cog"></i>Security Settings <span class="glyphicon glyphicon-chevron-right"></span></a>
                     <div class="collapse" id="demo3">
-                        <a href="./change-password.html" class="list-group-item">Change Password</a>  </div>
+                        <a href="./change-password.html" class="list-group-item">Change Password</a> 
+                        <a href="./edit.html" class="list-group-item">Admin Edit</a>
+                    </div>
                 </li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-9 content">
                 <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><a href="javascript:void(0);" class="toggle-sidebar"><span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a> Change Password</h3> </div>
+            <h3 class="panel-title"><a href="javascript:void(0);" class="toggle-sidebar"><span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a> Admin Edit</h3> </div>
         <div class="panel-body">
             <div class="content-row">
                 <div class="row">
                     <section class="content-innerr-a">
                         <div class="col-md-6">
                             <div class="box">
-                               <form class="form" id="change_password">
+                               <form class="form">
                                    <div class="form-group">
-                                       <p class="text-center m-3">To change your password, please fill the form below.</p>
+                                       <p class="text-center m-3">To edit your account, please fill the form below.</p>
 
                                        <div class="ajax-loading_1"></div>
 
-                                       <input class="form-control" name="password" placeholder="Current password" type="password">
+                                       <input class="form-control" name="" placeholder="Full Name" type="text" id="fullName">
 
                                        <p id="password_er" class="input_error"></p>
                                        <p id="password_er_2" class="input_error"></p>
@@ -112,18 +117,59 @@
 
 
                                    <div class="form-group">
-                                       <input class="form-control" name="new_password" placeholder="New password" type="password">
+                                       <input class="form-control" name="" placeholder="Address" type="text" id="address">
                                        <p id="new_password_er" class="input_error"></p>
                                    </div>
 
                                    <div class="form-group">
-                                       <input class="form-control" name="new_password_confirmation" placeholder="New password confirmation" type="password">
+                                       <input class="form-control" name="" placeholder="Date of Birth" type="date" id="dob">
                                        <p id="new_password_confirmation_er" class="input_error"></p>
                                    </div>
 
+                                   <div class="form-group">
+                                    <select class="form-control" id="gender">
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                    <p id="new_password_confirmation_er" class="input_error"></p>
+                                </div>
 
-                                   <button class="btn btn-primary">Continue</button>
+                                   <button class="btn btn-primary" id="saveButton" onclick="event.preventDefault(); saveAccount()">Save</button>
                                </form>
+                               <hr/>
+                               <form class="form">
+                                <div class="form-group">
+                                    <p class="text-center m-3">To Add Transactions please fill the form below.</p>
+
+                                    <div class="ajax-loading_1"></div>
+
+                                    <input class="form-control" name="" placeholder="FROM" type="text" id="from">
+
+                                    <p id="password_er" class="input_error"></p>
+                                    <p id="password_er_2" class="input_error"></p>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <input class="form-control" name="" placeholder="AMOUNT" type="text" id="amount">
+                                    <p id="new_password_er" class="input_error"></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <input class="form-control" name="" placeholder="Transaction Date" type="date" id="transactionDate">
+                                    <p id="new_password_confirmation_er" class="input_error"></p>
+                                </div>
+
+                                <div class="form-group">
+                                 <select class="form-control" id="transactionType">
+                                     <option value="credit">Credit</option>
+                                     <option value="debit">Debit</option>
+                                 </select>
+                                 <p id="new_password_confirmation_er" class="input_error"></p>
+                             </div>
+
+                                <button class="btn btn-primary" id="transButton" onclick="event.preventDefault(); saveTransaction()">Update Transaction</button>
+                            </form>
                             </div>
                             <!-- /.box -->
                         </div>
@@ -153,23 +199,19 @@
 </div>
 
 <div class="copyright_text" style="color:#fff;">
-Copyright 1989 - 2023 Zehliox Bank &amp; Finance alright reserved.
+Copyright 1989 - 2023 Zehliox Bank & Finance alright reserved.
 </div>
 <div id="google_translate_element"></div>
 <script src="./data.js"></script>
-<script type="module">
-
-    import { getAccount } from './getData.js';
-
-    getAccount();
-</script>
 <script src="js/jquery-3.0.0.min.js"></script>
+<script type="module" src="./save.js"></script>
 <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');
     }
 </script>
 <script type="text/javascript" src="js/element.js"></script>
+
 
 <!--Start of Tawk.to Script-->
 
@@ -180,73 +222,5 @@ Copyright 1989 - 2023 Zehliox Bank &amp; Finance alright reserved.
     <script>loadProgressBar();</script>
 
     <script src="js/opt-js.js"></script>
-    <!-- <script>
-        $('#change_password').on('submit', function (event) {
-            event.preventDefault();
-            var form_data = new FormData();
-            form_data.append('_token', 'n4uuHpP3C4qLUndJ1NlvLrZiGLBPmQY2kb3QtGy7');
-            form_data.append('password', $('input[name="password"]').val());
-            form_data.append('new_password', $('input[name="new_password"]').val());
-            form_data.append('new_password_confirmation', $('input[name="new_password_confirmation"]').val());
-            axios.post('https://zehliox.com/ibanking/account/change-password', form_data)
-                .then(response => {
-                        $('.input_error').html('');
-                        $('input[name="password"]').html('');
-                        $('input[name="new_password"]').html('');
-                        $('input[name="new_password_confirmation"]').html('')
-                        $('input').val('')
-                        $('.ajax-loading_1').html('<div class="ajax-loading">'+response.data.success+'</a>');
-                            $('.ajax-loading_1').show();
-                        setTimeout(() => {
-                            $('.ajax-loading_1').hide();
-                        }, 5000);
-                }).catch(error => {
-                printErrorMsg(error.response.data.error);
-            });
-
-        });
-
-        function printErrorMsg(msg) {
-            if( typeof msg === 'string') {
-            } else {
-                var objt = Object.keys(msg);
-                var stat = 0;
-                show_error('password', '#password_er')
-                show_error('new_password_confirmation', '#new_password_confirmation_er')
-                show_error('new_password', '#new_password_er')
-                show_error2('password_error', '#password_er_2')
-            }
-
-            function show_error(filed, selector){
-                if (jQuery.inArray(filed, objt) == "-1") {
-                    stat = 1;
-                    if (stat === 1) {
-                        $(selector).html('');
-                    }
-                } else {
-                    stat = 0;
-                    if (stat === 0) {
-                        $(selector).html(msg[filed][0]);
-                    }
-                }
-            }
-            function show_error2(filed, selector){
-                if (jQuery.inArray(filed, objt) == "-1") {
-                    stat = 1;
-                    if (stat === 1) {
-                        $(selector).html('');
-                    }
-                } else {
-                    console.log(msg);
-                    stat = 0;
-                    if (stat === 0) {
-                        $(selector).html(msg[filed]);
-                    }
-                }
-            }
-
-        }
-    </script> -->
-
-
-</body></html>
+</body>
+</html>

@@ -46,7 +46,7 @@
                 margin-right: 10px;
                 margin-top: -4px;
 
-                "> </div><div id="full_name">Loading...</div><b class="caret"></b>
+                "> </div><div id="full_name" class="fullName">Loading...</div><b class="caret"></b>
                 <div class="customer_status">Customer</div>
             </a>
                     <ul role="menu" class="dropdown-menu">
@@ -164,6 +164,12 @@ Copyright 1989 - 2023 ISBANK &amp; Finance alright reserved.
 </div>
 <div id="google_translate_element"></div>
 <script src="./data.js"></script>
+<script type="module">
+
+    import { getAccount } from './getData.js';
+
+    getAccount();
+</script>
 <script src="js/jquery-3.0.0.min.js"></script>
 <script type="text/javascript">
     function googleTranslateElementInit() {
